@@ -2,11 +2,19 @@
   export let content = ""; // The text to display in the code block
   export let label = ""; // Optional label for accessibility
 
+  let showCopiedMessage = false; // State variable for the toast message
+
   // Function to copy the content to clipboard
   function copyToClipboard() {
     navigator.clipboard.writeText(content).then(
       () => {
         console.log("Copied to clipboard:", content);
+        showCopiedMessage = true; // Show the toast message
+
+        // Hide the message after 2 seconds
+        setTimeout(() => {
+          showCopiedMessage = false;
+        }, 2000);
       },
       (err) => {
         console.error("Could not copy text: ", err);
@@ -39,4 +47,13 @@
       />
     </svg>
   </button>
+
+  <!-- Toast message -->
+  {#if showCopiedMessage}
+    <div
+      class="absolute top-0 right-0 mt-2 mr-2 bg-green-500 text-white text-sm p-1 rounded shadow"
+    >
+      Copied to clipboard!
+    </div>
+  {/if}
 </div>
