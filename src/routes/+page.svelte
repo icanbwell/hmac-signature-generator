@@ -2,6 +2,7 @@
   import InputField from "../components/InputField.svelte";
   import SelectField from "../components/SelectField.svelte";
   import TextAreaField from "../components/TextAreaField.svelte";
+  import CopyPasteBlock from "../components/CopyPasteBlock.svelte";
 
   const environmentOptions = [
     { value: "dev", label: "dev" },
@@ -27,9 +28,10 @@
   let hmacSignature = "";
   let host = "";
   let path = "";
+  let curlCommand = "";
 
-  // Generate HMAC signature
-  async function generateHmac() {
+  // Generate HMAC signature and cURL command
+  async function generate() {
     try {
       // Collect the data to be used in the HMAC
       const host = `user-data-ops.${environment}.icanbwell.com`;
@@ -67,6 +69,16 @@
 
       // Convert ArrayBuffer to base64 string
       hmacSignature = btoa(String.fromCharCode(...new Uint8Array(signature)));
+
+      // Construct the cURL command
+      curlCommand = `curl --request ${method} \\
+        --url https://${host}${path} \\
+        --header 'Authorization: HMAC-SHA512 SignedHeaders=x-bwell-date;host;x-bwell-client-user-token;x-bwell-client-key;x-bwell-content-sha512&Signature=${hmacSignature}' \\
+        --header 'x-bwell-date: ${xBwellDate}' \\
+        --header 'x-bwell-client-key: ${xBwellClientKey}' \\
+        --header 'x-bwell-content-sha512: ${xBwellContentSha512}' \\
+        --header 'x-bwell-client-user-token: ${xBwellClientUserToken}' \\
+        --header 'accept: application/json'`;
 
       console.log("Generated HMAC Signature:", hmacSignature);
     } catch (error) {
@@ -132,12 +144,16 @@
 </div>
 
 <button
-  on:click={generateHmac}
+  on:click={generate}
   class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
 >
   Generate HMAC
 </button>
 
 {#if hmacSignature}
-  <p class="mt-4 text-gray-700">Generated HMAC: {hmacSignature}</p>
+  <CopyPasteBlock content={hmacSignature} label="HMAC Signature" />
+{/if}
+
+{#if curlCommand}
+  <CopyPasteBlock content={curlCommand} label="cURL Command" />
 {/if}
