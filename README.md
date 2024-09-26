@@ -1,22 +1,10 @@
-# create-svelte
+# hmac-signature-generator
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This web app lets you generate an HMAC signature and build a cURL for commands against the `user-data-ops` API.
 
-## Creating a project
+## Running Locally
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've created a project and installed dependencies with `npm install`, start a development server:
 
 ```bash
 npm run dev
@@ -25,14 +13,4 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Many of the values will be populated for you, but you'll need to supply the client key, JWT and HMAC secret. Once all the values are filled in, click "Generate" to see the generated signature and copy a cURL you can paste into your console. 

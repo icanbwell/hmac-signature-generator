@@ -21,10 +21,8 @@
   let xBwellDate = new Date().toISOString().slice(0, 16);
   let xBwellContentSha512 =
     "z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==";
-  let xBwellClientKey =
-    "eyJyIjoiNWV4b3d2N2RqZzVtbWpyb2JlaiIsImVudiI6ImNsaWVudC1zYW5kYm94Iiwia2lkIjoic2Ftc3VuZy1jbGllbnQtc2FuZGJveCJ9";
-  let xBwellClientUserToken =
-    "eyJraWQiOiJid2VsbC10ZXN0IiwiYWxnIjoiRVMyNTYiLCJ0eXAiOiJKV1QifQ.eyJndWlkIjoiRnp3VFlEeHJmaTcvVUlRcDN0U1Rkdz09Iiwib3RpZCI6ImZhbHNlIiwiaWF0IjoxNzI3MjE5MTk3LCJleHAiOjE3NTg3NTUxOTd9.lQkenAKstlMsZlK7dBvRHg0_mFkH-FKoTmXnykUh2Flzm1ihhYZ3MKauPh3BCRKJjU0PEfR-jEoT0QV1t5bpgQ";
+  let xBwellClientKey = "";
+  let xBwellClientUserToken = "";
   let hmacSignature = "";
   let host = "";
   let path = "";
