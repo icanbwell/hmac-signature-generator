@@ -1,12 +1,29 @@
 <script>
+  import InputField from "../components/InputField.svelte";
+  import SelectField from "../components/SelectField.svelte";
+  import TextAreaField from "../components/TextAreaField.svelte";
+
+  const environmentOptions = [
+    { value: "dev", label: "dev" },
+    { value: "client-sandbox", label: "client-sandbox" },
+    { value: "staging", label: "staging" },
+  ];
+
+  const requestOptions = [
+    { value: "user-delete", label: "user delete" },
+    { value: "data-export", label: "data export" },
+  ];
+
   let environment = "client-sandbox";
   let request = "data-export";
   let userId = "FzwTYDxrfi7%2FUIQp3tSTdw%3D%3D";
   let xBwellDate = new Date().toISOString().slice(0, 16);
   let xBwellContentSha512 =
     "z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==";
-  let xBwellClientKey = "";
-  let xBwellClientUserToken = "";
+  let xBwellClientKey =
+    "eyJyIjoiNWV4b3d2N2RqZzVtbWpyb2JlaiIsImVudiI6ImNsaWVudC1zYW5kYm94Iiwia2lkIjoic2Ftc3VuZy1jbGllbnQtc2FuZGJveCJ9";
+  let xBwellClientUserToken =
+    "eyJraWQiOiJid2VsbC10ZXN0IiwiYWxnIjoiRVMyNTYiLCJ0eXAiOiJKV1QifQ.eyJndWlkIjoiRnp3VFlEeHJmaTcvVUlRcDN0U1Rkdz09Iiwib3RpZCI6ImZhbHNlIiwiaWF0IjoxNzI3MjE5MTk3LCJleHAiOjE3NTg3NTUxOTd9.lQkenAKstlMsZlK7dBvRHg0_mFkH-FKoTmXnykUh2Flzm1ihhYZ3MKauPh3BCRKJjU0PEfR-jEoT0QV1t5bpgQ";
   let hmacSignature = "";
   let host = "";
   let path = "";
@@ -64,98 +81,54 @@
 </p>
 
 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 mb-5">
-  <div class="flex flex-col">
-    <label for="environment" class="mb-2 text-gray-700">Environment</label>
-    <select
-      id="environment"
-      bind:value={environment}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="dev">dev</option>
-      <option value="client-sandbox">client-sandbox</option>
-      <option value="staging">staging</option>
-    </select>
-  </div>
-
-  <div class="flex flex-col">
-    <label for="request" class="mb-2 text-gray-700">Request</label>
-    <select
-      id="request"
-      bind:value={request}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="user-delete">user delete</option>
-      <option value="data-export">data export</option>
-    </select>
-  </div>
-
-  <div class="flex flex-col">
-    <label for="userId" class="mb-2 text-gray-700">userId</label>
-    <input
-      type="text"
-      placeholder="Enter user ID..."
-      id="userId"
-      bind:value={userId}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-  </div>
-
-  <div class="flex flex-col">
-    <label for="hmacSecret" class="mb-2 text-gray-700">HMAC Secret</label>
-    <input
-      type="text"
-      placeholder="Enter HMAC Secret..."
-      id="hmacSecret"
-      bind:value={hmacSecret}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-  </div>
-
-  <div class="flex flex-col">
-    <label for="x-bwell-date" class="mb-2 text-gray-700">x-bwell-date</label>
-    <input
-      type="datetime-local"
-      id="x-bwell-date"
-      bind:value={xBwellDate}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-  </div>
-
-  <div class="flex flex-col">
-    <label for="x-bwell-client-key" class="mb-2 text-gray-700"
-      >x-bwell-client-key</label
-    >
-    <textarea
-      placeholder="Enter client key..."
-      id="x-bwell-client-key"
-      bind:value={xBwellClientKey}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    ></textarea>
-  </div>
-
-  <div class="flex flex-col">
-    <label for="x-bwell-content-sha512" class="mb-2 text-gray-700"
-      >x-bwell-content-sha512</label
-    >
-    <textarea
-      placeholder="Enter content..."
-      id="x-bwell-content-sha512"
-      bind:value={xBwellContentSha512}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    ></textarea>
-  </div>
-
-  <div class="flex flex-col">
-    <label for="x-bwell-client-user-token" class="mb-2 text-gray-700"
-      >x-bwell-client-user-token</label
-    >
-    <textarea
-      placeholder="Enter user token..."
-      id="x-bwell-client-user-token"
-      bind:value={xBwellClientUserToken}
-      class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    ></textarea>
-  </div>
+  <SelectField
+    id="environment"
+    label="Environment"
+    options={environmentOptions}
+    bindValue={environment}
+  />
+  <SelectField
+    id="request"
+    label="Request"
+    options={requestOptions}
+    bindValue={request}
+  />
+  <InputField
+    id="userId"
+    label="userId"
+    placeholder="Enter user ID..."
+    bind:value={userId}
+  />
+  <InputField
+    id="hmacSecret"
+    label="HMAC Secret"
+    placeholder="Enter HMAC Secret..."
+    bind:value={hmacSecret}
+  />
+  <InputField
+    id="x-bwell-date"
+    label="x-bwell-date"
+    type="datetime-local"
+    bind:value={xBwellDate}
+  />
+  <TextAreaField
+    id="x-bwell-client-key"
+    label="x-bwell-client-key"
+    placeholder="Enter client key..."
+    bindValue={xBwellClientKey}
+  />
+  <TextAreaField
+    id="x-bwell-content-sha512"
+    label="x-bwell-content-sha512"
+    placeholder="Enter content..."
+    bindValue={xBwellContentSha512}
+  />
+  <TextAreaField
+    id="x-bwell-client-user-token"
+    label="x-bwell-client-user-token"
+    placeholder="Enter user token..."
+    bindValue={xBwellClientUserToken}
+  />
 </div>
 
 <button
@@ -165,7 +138,6 @@
   Generate HMAC
 </button>
 
-<!-- Display the generated HMAC signature -->
 {#if hmacSignature}
   <p class="mt-4 text-gray-700">Generated HMAC: {hmacSignature}</p>
 {/if}
