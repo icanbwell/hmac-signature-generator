@@ -96,13 +96,13 @@
     id="environment"
     label="Environment"
     options={environmentOptions}
-    bindValue={environment}
+    bind:value={environment}
   />
   <SelectField
     id="request"
     label="Request"
     options={requestOptions}
-    bindValue={request}
+    bind:value={request}
   />
   <InputField
     id="userId"
@@ -126,19 +126,19 @@
     id="x-bwell-client-key"
     label="x-bwell-client-key"
     placeholder="Enter client key..."
-    bindValue={xBwellClientKey}
+    bind:value={xBwellClientKey}
   />
   <TextAreaField
     id="x-bwell-content-sha512"
     label="x-bwell-content-sha512"
     placeholder="Enter content..."
-    bindValue={xBwellContentSha512}
+    bind:value={xBwellContentSha512}
   />
   <TextAreaField
     id="x-bwell-client-user-token"
     label="x-bwell-client-user-token"
     placeholder="Enter user token..."
-    bindValue={xBwellClientUserToken}
+    bind:value={xBwellClientUserToken}
   />
 </div>
 
