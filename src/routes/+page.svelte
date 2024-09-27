@@ -1,8 +1,9 @@
 <script>
-  import InputField from "../components/InputField.svelte";
-  import SelectField from "../components/SelectField.svelte";
-  import TextAreaField from "../components/TextAreaField.svelte";
-  import CopyPasteBlock from "../components/CopyPasteBlock.svelte";
+  import InputField from "@/components/InputField.svelte";
+  import SelectField from "@/components/SelectField.svelte";
+  import TextAreaField from "@/components/TextAreaField.svelte";
+  import CopyPasteBlock from "@/components/CopyPasteBlock.svelte";
+  import { generate } from "@/lib/hmac-generator";
 
   const environmentOptions = [
     { value: "dev", label: "dev" },
@@ -27,61 +28,22 @@
   let hmacSignature = "";
   let curlCommand = "";
 
-  // Generate HMAC signature and cURL command
-  async function generate() {
-    try {
-      // Collect the data to be used in the HMAC
-      const host = `user-data-ops.${environment}.icanbwell.com`;
-      let path = `/users/${userId}`;
-      let method = "DELETE";
+  const generateHmacSignature = () => {
+    const data = {
+      environment,
+      request,
+      userId,
+      xBwellDate,
+      xBwellContentSha512,
+      xBwellClientKey,
+      xBwellClientUserToken,
+      hmacSecret,
+    };
 
-      if (request === "data-export") {
-        method = "POST";
-        path = `/users/${userId}/data-exports`;
-      }
-
-      // Assemble the string to sign
-      const stringToSign = [
-        method.toUpperCase(),
-        path,
-        `${xBwellDate};${host};${xBwellClientUserToken};${xBwellClientKey};${xBwellContentSha512}`,
-      ].join("\n");
-
-      // Encode the data and the key
-      const encoder = new TextEncoder();
-      const key = await window.crypto.subtle.importKey(
-        "raw",
-        encoder.encode(hmacSecret),
-        { name: "HMAC", hash: "SHA-512" },
-        false,
-        ["sign"]
-      );
-
-      // Generate the HMAC signature
-      const signature = await window.crypto.subtle.sign(
-        "HMAC",
-        key,
-        encoder.encode(stringToSign)
-      );
-
-      // Convert ArrayBuffer to base64 string
-      hmacSignature = btoa(String.fromCharCode(...new Uint8Array(signature)));
-
-      // Construct the cURL command
-      curlCommand = `curl --request ${method} \\
-        --url https://${host}${path} \\
-        --header 'Authorization: HMAC-SHA512 SignedHeaders=x-bwell-date;host;x-bwell-client-user-token;x-bwell-client-key;x-bwell-content-sha512&Signature=${hmacSignature}' \\
-        --header 'x-bwell-date: ${xBwellDate}' \\
-        --header 'x-bwell-client-key: ${xBwellClientKey}' \\
-        --header 'x-bwell-content-sha512: ${xBwellContentSha512}' \\
-        --header 'x-bwell-client-user-token: ${xBwellClientUserToken}' \\
-        --header 'accept: application/json'`;
-
-      console.log("Generated HMAC Signature:", hmacSignature);
-    } catch (error) {
-      console.error("HMAC generation failed:", error);
-    }
-  }
+    const { signature, curl } = generate(data);
+    hmacSignature = signature;
+    curlCommand = curl;
+  };
 </script>
 
 <h1 class="text-4xl font-bold">HMAC Generator</h1>
@@ -141,7 +103,7 @@
 </div>
 
 <button
-  on:click={generate}
+  on:click={generateHmacSignature}
   class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
 >
   Generate HMAC
