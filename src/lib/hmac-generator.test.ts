@@ -13,8 +13,6 @@ describe('generateHmacSignature', () => {
 
         const signature = await generateHmacSignature(params);
         expect(signature).toBeDefined();
-        // You can add more specific expectations if you have known output
-        // Example: expect(signature).toBe('expected-signature');
     });
 })
 
