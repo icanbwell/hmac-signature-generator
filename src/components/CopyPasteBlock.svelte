@@ -1,6 +1,7 @@
 <script>
   export let content = ""; // The text to display in the code block
   export let label = ""; // Optional label for accessibility
+  export let id; // ID for the code block
 
   let showCopiedMessage = false; // State variable for the toast message
 
@@ -25,6 +26,7 @@
 
 <div class="relative mt-4">
   <pre
+    {id}
     class="p-2 bg-gray-100 text-gray-800 rounded overflow-x-auto">{content}</pre>
   <button
     on:click={copyToClipboard}

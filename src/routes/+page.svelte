@@ -21,6 +21,8 @@
   let curlCommand = "";
 
   const generateSignatureAndCurl = async () => {
+    hmacSignature = "";
+    curlCommand = "";
     hmacSignature = await generateHmacSignature(params);
     curlCommand = makeCurl(hmacSignature, params);
   };
@@ -84,15 +86,16 @@
 
 <button
   on:click={generateSignatureAndCurl}
+  id="btn-generate-hmac"
   class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
 >
   Generate HMAC
 </button>
 
 {#if hmacSignature}
-  <CopyPasteBlock content={hmacSignature} label="HMAC Signature" />
+  <CopyPasteBlock id="code-block-signature" content={hmacSignature} label="HMAC Signature" />
 {/if}
 
 {#if curlCommand}
-  <CopyPasteBlock content={curlCommand} label="cURL Command" />
+  <CopyPasteBlock id="code-block-curl-command" content={curlCommand} label="cURL Command" />
 {/if}
