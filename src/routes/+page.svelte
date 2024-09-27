@@ -3,7 +3,7 @@
   import SelectField from "@/components/SelectField.svelte";
   import TextAreaField from "@/components/TextAreaField.svelte";
   import CopyPasteBlock from "@/components/CopyPasteBlock.svelte";
-  import { generate, makeCurl, INITIAL_PARAMS } from "@/lib/hmac-generator";
+  import { generateHmacSignature, makeCurl, INITIAL_PARAMS } from "@/lib/hmac-generator";
 
   const environmentOptions = [
     { value: "dev", label: "dev" },
@@ -21,7 +21,7 @@
   let curlCommand = "";
 
   const generateSignatureAndCurl = async () => {
-    hmacSignature = await generate(params);
+    hmacSignature = await generateHmacSignature(params);
     curlCommand = makeCurl(hmacSignature, params);
   };
 </script>

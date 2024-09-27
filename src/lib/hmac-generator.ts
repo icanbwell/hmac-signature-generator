@@ -1,4 +1,4 @@
-export interface HmacGeneratorParams {
+export type HmacGeneratorParams = {
     environment: string;
     userId: string;
     request: string;
@@ -45,7 +45,7 @@ function parseUrl(params: HmacGeneratorParams): ParsedUrl {
     }
 }
 
-export async function generate(params: HmacGeneratorParams): Promise<string> {
+export async function generateHmacSignature(params: HmacGeneratorParams): Promise<string> {
     const {
         xBwellDate,
         xBwellClientUserToken,
