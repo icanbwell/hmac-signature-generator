@@ -25,8 +25,6 @@
   let xBwellClientUserToken = "";
   let hmacSecret = "";
   let hmacSignature = "";
-  let host = "";
-  let path = "";
   let curlCommand = "";
 
   // Generate HMAC signature and cURL command
