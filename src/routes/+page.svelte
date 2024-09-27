@@ -3,7 +3,7 @@
   import SelectField from "@/components/SelectField.svelte";
   import TextAreaField from "@/components/TextAreaField.svelte";
   import CopyPasteBlock from "@/components/CopyPasteBlock.svelte";
-  import { generate } from "@/lib/hmac-generator";
+  import { generate, makeCurl, INITIAL_PARAMS } from "@/lib/hmac-generator";
 
   const environmentOptions = [
     { value: "dev", label: "dev" },
@@ -16,33 +16,13 @@
     { value: "data-export", label: "data export" },
   ];
 
-  let environment = "client-sandbox";
-  let request = "data-export";
-  let userId = "FzwTYDxrfi7%2FUIQp3tSTdw%3D%3D";
-  let xBwellDate = new Date().toISOString().slice(0, 16);
-  let xBwellContentSha512 =
-    "z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==";
-  let xBwellClientKey = "";
-  let xBwellClientUserToken = "";
-  let hmacSecret = "";
+  let params = INITIAL_PARAMS;
   let hmacSignature = "";
   let curlCommand = "";
 
-  const generateHmacSignature = () => {
-    const data = {
-      environment,
-      request,
-      userId,
-      xBwellDate,
-      xBwellContentSha512,
-      xBwellClientKey,
-      xBwellClientUserToken,
-      hmacSecret,
-    };
-
-    const { signature, curl } = generate(data);
-    hmacSignature = signature;
-    curlCommand = curl;
+  const generateSignatureAndCurl = async () => {
+    hmacSignature = await generate(params);
+    curlCommand = makeCurl(hmacSignature, params);
   };
 </script>
 
@@ -56,54 +36,54 @@
     id="environment"
     label="Environment"
     options={environmentOptions}
-    bind:value={environment}
+    bind:value={params.environment}
   />
   <SelectField
     id="request"
     label="Request"
     options={requestOptions}
-    bind:value={request}
+    bind:value={params.request}
   />
   <InputField
     id="userId"
     label="userId"
     placeholder="Enter user ID..."
-    bind:value={userId}
+    bind:value={params.userId}
   />
   <InputField
-    id="hmacSecret"
+    id="secret"
     label="HMAC Secret"
     placeholder="Enter HMAC Secret..."
-    bind:value={hmacSecret}
+    bind:value={params.secret}
   />
   <InputField
     id="x-bwell-date"
     label="x-bwell-date"
     type="datetime-local"
-    bind:value={xBwellDate}
+    bind:value={params.xBwellDate}
   />
   <TextAreaField
     id="x-bwell-client-key"
     label="x-bwell-client-key"
     placeholder="Enter client key..."
-    bind:value={xBwellClientKey}
+    bind:value={params.xBwellClientKey}
   />
   <TextAreaField
     id="x-bwell-content-sha512"
     label="x-bwell-content-sha512"
     placeholder="Enter content..."
-    bind:value={xBwellContentSha512}
+    bind:value={params.xBwellContentSha512}
   />
   <TextAreaField
     id="x-bwell-client-user-token"
     label="x-bwell-client-user-token"
     placeholder="Enter user token..."
-    bind:value={xBwellClientUserToken}
+    bind:value={params.xBwellClientUserToken}
   />
 </div>
 
 <button
-  on:click={generateHmacSignature}
+  on:click={generateSignatureAndCurl}
   class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
 >
   Generate HMAC
