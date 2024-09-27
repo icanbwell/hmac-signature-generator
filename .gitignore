@@ -130,4 +130,5 @@ dist
 .pnp.*
 
 .svelte-kit/
-.playwright-report/
+playwright-report/
+test-results/
