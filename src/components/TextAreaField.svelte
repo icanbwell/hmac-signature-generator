@@ -12,6 +12,7 @@
 <div class="flex flex-col">
   <label for={id} class="mb-2 text-gray-700">{label}</label>
   <textarea
+    required
     {id}
     {placeholder}
     bind:value

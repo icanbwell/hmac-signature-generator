@@ -3,7 +3,11 @@
   import SelectField from "@/components/SelectField.svelte";
   import TextAreaField from "@/components/TextAreaField.svelte";
   import CopyPasteBlock from "@/components/CopyPasteBlock.svelte";
-  import { generateHmacSignature, makeCurl, INITIAL_PARAMS } from "@/lib/hmac-generator";
+  import {
+    generateHmacSignature,
+    makeCurl,
+    INITIAL_PARAMS,
+  } from "@/lib/hmac-generator";
 
   const environmentOptions = [
     { value: "dev", label: "dev" },
@@ -20,9 +24,12 @@
   let hmacSignature = "";
   let curlCommand = "";
 
-  const generateSignatureAndCurl = async () => {
+  const clearSignatureAndCurl = () => {
     hmacSignature = "";
     curlCommand = "";
+  };
+
+  const generateSignatureAndCurl = async () => {
     hmacSignature = await generateHmacSignature(params);
     curlCommand = makeCurl(hmacSignature, params);
   };
@@ -33,7 +40,12 @@
   Enter the values below to generate a valid signature and cURL.
 </p>
 
-<div class="grid grid-cols-1 gap-6 md:grid-cols-2 mb-5">
+<form
+  action="#"
+  on:submit={generateSignatureAndCurl}
+  id="frmHmacParams"
+  class="grid grid-cols-1 gap-6 md:grid-cols-2 mb-5"
+>
   <SelectField
     id="environment"
     label="Environment"
@@ -82,20 +94,28 @@
     placeholder="Enter user token..."
     bind:value={params.xBwellClientUserToken}
   />
-</div>
-
-<button
-  on:click={generateSignatureAndCurl}
-  id="btn-generate-hmac"
-  class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
->
-  Generate HMAC
-</button>
+  <button
+    on:click={clearSignatureAndCurl}
+    id="btn-generate-hmac"
+    class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+    type="submit"
+  >
+    Generate HMAC
+  </button>
+</form>
 
 {#if hmacSignature}
-  <CopyPasteBlock id="code-block-signature" content={hmacSignature} label="HMAC Signature" />
+  <CopyPasteBlock
+    id="code-block-signature"
+    content={hmacSignature}
+    label="HMAC Signature"
+  />
 {/if}
 
 {#if curlCommand}
-  <CopyPasteBlock id="code-block-curl-command" content={curlCommand} label="cURL Command" />
+  <CopyPasteBlock
+    id="code-block-curl-command"
+    content={curlCommand}
+    label="cURL Command"
+  />
 {/if}

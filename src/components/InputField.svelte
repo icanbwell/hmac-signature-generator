@@ -14,6 +14,7 @@
 <div class="flex flex-col">
   <label for={id} class="mb-2 text-gray-700">{label}</label>
   <input
+    required
     {id}
     {type}
     {placeholder}
