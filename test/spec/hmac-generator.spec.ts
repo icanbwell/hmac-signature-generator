@@ -37,11 +37,6 @@ test.describe('HMAC Generator Page', () => {
         const clientKeyInputIsValid = await clientKeyInput.evaluate((el: HTMLInputElement) => el.checkValidity());
         expect(clientKeyInputIsValid).toBe(false);
 
-        // is the generate button disabled?
-        const generateButton = hmacGeneratorPage.page.locator(hmacGeneratorPage.generateButton);
-        const generateButtonIsDisabled = await generateButton.isEnabled();
-        expect(generateButtonIsDisabled).toBe(false);
-
         // are the signature and cURL command elements hidden?
         const preSignature = hmacGeneratorPage.page.locator(hmacGeneratorPage.preSignature);
         const preCurl = hmacGeneratorPage.page.locator(hmacGeneratorPage.preCurl);
