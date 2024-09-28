@@ -9,6 +9,10 @@ test.describe('HMAC Generator Page', () => {
         await hmacGeneratorPage.goto();
     });
 
+    test.afterEach(async ({ page }) => {
+        await page.reload();
+    });
+
     test('should generate HMAC signature and cURL command', async () => {
         await hmacGeneratorPage.fillClientKey('test-client-key');
         await hmacGeneratorPage.fillClientUserToken('test-user-token');
@@ -22,5 +26,27 @@ test.describe('HMAC Generator Page', () => {
         expect(hmacSignature).not.toBe('');
         expect(curlCommand).toContain('--request POST');
         expect(curlCommand).toContain('https://user-data-ops.client-sandbox.icanbwell.com');
+    });
+
+    test('Should not generate HMAC signature when required field is empty', async () => {
+        await hmacGeneratorPage.fillClientKey('');
+        await hmacGeneratorPage.generateSignature();
+
+        // is the client key element marked as invalid?
+        const clientKeyInput = hmacGeneratorPage.page.locator(hmacGeneratorPage.clientKeyInput);
+        const clientKeyInputIsValid = await clientKeyInput.evaluate((el: HTMLInputElement) => el.checkValidity());
+        expect(clientKeyInputIsValid).toBe(false);
+
+        // is the generate button disabled?
+        const generateButton = hmacGeneratorPage.page.locator(hmacGeneratorPage.generateButton);
+        const generateButtonIsDisabled = await generateButton.isEnabled();
+        expect(generateButtonIsDisabled).toBe(false);
+
+        // are the signature and cURL command elements hidden?
+        const preSignature = hmacGeneratorPage.page.locator(hmacGeneratorPage.preSignature);
+        const preCurl = hmacGeneratorPage.page.locator(hmacGeneratorPage.preCurl);
+
+        expect(preSignature).not.toBeVisible();
+        expect(preCurl).not.toBeVisible();
     });
 });
