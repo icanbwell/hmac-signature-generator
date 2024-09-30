@@ -2,6 +2,7 @@
 	"name": "hmac-generator-svelte",
 	"version": "0.0.1",
 	"private": true,
+	"license": "Apache-2.0",
 	"scripts": {
 		"start": "vite dev -- --open",
 		"build": "vite build",
