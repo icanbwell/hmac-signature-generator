@@ -3,8 +3,8 @@ import { Page } from '@playwright/test';
 
 export class HmacGeneratorPage {
     readonly page: Page;
-    readonly environmentSelect: string;
-    readonly requestSelect: string;
+    readonly urlInput: string;
+    readonly methodSelect: string;
     readonly userIdInput: string;
     readonly hmacSecretInput: string;
     readonly generateButton: string;
@@ -15,8 +15,8 @@ export class HmacGeneratorPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.environmentSelect = '#environment';
-        this.requestSelect = '#request';
+        this.urlInput = '#url';
+        this.methodSelect = '#method';
         this.userIdInput = '#userId';
         this.hmacSecretInput = '#secret';
         this.generateButton = '#btn-generate-hmac';
@@ -30,12 +30,12 @@ export class HmacGeneratorPage {
         await this.page.goto('/');
     }
 
-    async selectEnvironment(value: string) {
-        await this.page.selectOption(this.environmentSelect, { value });
+    async enterUrl(url: string) {
+        await this.page.fill(this.urlInput, url);
     }
 
-    async selectRequest(value: string) {
-        await this.page.selectOption(this.requestSelect, { value });
+    async selectMethod(value: string) {
+        await this.page.selectOption(this.methodSelect, { value });
     }
 
     async fillUserId(userId: string) {

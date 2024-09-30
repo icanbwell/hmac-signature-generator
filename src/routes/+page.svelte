@@ -33,7 +33,7 @@
 
   let body = "";
 
-  $: if (body !== undefined && body !== null) {
+  $: if (body !== undefined && body !== null && typeof window !== "undefined") {
     updateHash();
   }
 
@@ -42,8 +42,6 @@
       ...params,
       xBwellContentSha512: await sha512(body),
     };
-
-    console.log(params.xBwellContentSha512);
   }
 </script>
 
@@ -89,6 +87,7 @@
     id="body"
     label="Body"
     placeholder="Enter body..."
+    required={false}
     bind:value={body}
   />
   <TextAreaField

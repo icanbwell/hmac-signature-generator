@@ -44,11 +44,6 @@ function parseUrl(url: string): ParsedUrl {
     const path = parsedUrl.pathname;
 
     return { host, path };
-
-    return {
-        host,
-        path,
-    }
 }
 
 export async function generateHmacSignature(params: HmacGeneratorParams): Promise<string> {
@@ -95,9 +90,9 @@ export async function generateHmacSignature(params: HmacGeneratorParams): Promis
 export async function sha512(message: string): Promise<string> {
     const encoder = new TextEncoder();
     const data = encoder.encode(message);
-    const hashBuffer = await window.crypto.subtle.digest("SHA-512", data);
+    const hashBuffer = await window.crypto.subtle.digest('SHA-512', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return btoa(String.fromCharCode(...hashArray));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 export const makeCurl = (signature: string, params: HmacGeneratorParams): string => {
