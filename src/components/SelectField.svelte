@@ -15,7 +15,7 @@
     {id}
     bind:value
     on:change={handleChange}
-    class="p-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+    class="p-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
   >
     {#each options as option}
       <option value={option.value}>{option.label}</option>
