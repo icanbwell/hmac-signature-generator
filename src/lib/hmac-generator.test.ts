@@ -28,8 +28,8 @@ describe('makeCurl', () => {
         const signature = await generateHmacSignature(params);
         const curlCommand = makeCurl(signature, params);
 
-        expect(curlCommand).toContain(`--request ${params.request === 'data-export' ? 'POST' : 'DELETE'}`);
-        expect(curlCommand).toContain(`https://user-data-ops.${params.environment}.icanbwell.com/users/${params.userId}/data-exports`);
+        expect(curlCommand).toContain(`--request ${params.method}`);
+        expect(curlCommand).toContain(params.url);
         expect(curlCommand).toContain(`Authorization: HMAC-SHA512 SignedHeaders=x-bwell-date;host;x-bwell-client-user-token;x-bwell-client-key;x-bwell-content-sha512&Signature=${signature}`);
         expect(curlCommand).toContain(`x-bwell-date: ${params.xBwellDate}`);
         expect(curlCommand).toContain(`x-bwell-client-key: ${params.xBwellClientKey}`);

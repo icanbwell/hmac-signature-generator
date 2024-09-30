@@ -1,7 +1,19 @@
+export enum HttpMethod {
+    GET = "GET",
+    POST = "POST",
+    PUT = "PUT",
+    PATCH = "PATCH",
+    DELETE = "DELETE",
+    HEAD = "HEAD",
+    OPTIONS = "OPTIONS",
+    CONNECT = "CONNECT",
+    TRACE = "TRACE",
+}
+
 export type HmacGeneratorParams = {
-    environment: string;
+    url: string;
+    method: HttpMethod;
     userId: string;
-    request: string;
     xBwellDate: string;
     xBwellClientUserToken: string;
     xBwellClientKey: string;
@@ -10,8 +22,8 @@ export type HmacGeneratorParams = {
 }
 
 export const INITIAL_PARAMS: HmacGeneratorParams = {
-    environment: "client-sandbox",
-    request: "data-export",
+    url: "https://user-data-ops.client-sandbox.icanbwell.com/users/FzwTYdxtxdUIQp3tSTdw%3D%3D/data-exports",
+    method: HttpMethod.POST,
     userId: "FzwTYDxrfi7%2FUIQp3tSTdw%3D%3D",
     xBwellDate: new Date().toISOString().slice(0, 16),
     xBwellContentSha512:
@@ -23,38 +35,34 @@ export const INITIAL_PARAMS: HmacGeneratorParams = {
 
 interface ParsedUrl {
     host: string;
-    method: string;
     path: string;
 }
 
-function parseUrl(params: HmacGeneratorParams): ParsedUrl {
-    // Assemble the host and path
-    const host = `user-data-ops.${params.environment}.icanbwell.com`;
-    let path = `/users/${params.userId}`;
-    let method = "DELETE";
+function parseUrl(url: string): ParsedUrl {
+    const parsedUrl = new URL(url);
+    const host = parsedUrl.host;
+    const path = parsedUrl.pathname;
 
-    if (params.request === "data-export") {
-        method = "POST";
-        path = `/users/${params.userId}/data-exports`;
-    }
+    return { host, path };
 
     return {
         host,
-        method,
         path,
     }
 }
 
 export async function generateHmacSignature(params: HmacGeneratorParams): Promise<string> {
     const {
+        url,
         xBwellDate,
         xBwellClientUserToken,
         xBwellClientKey,
         xBwellContentSha512,
+        method,
         secret,
     } = params;
 
-    const { host, method, path } = parseUrl(params);
+    const { host, path } = parseUrl(url);
 
     // Assemble the string to sign
     const stringToSign = [
@@ -84,11 +92,17 @@ export async function generateHmacSignature(params: HmacGeneratorParams): Promis
     return btoa(String.fromCharCode(...new Uint8Array(signature)));
 }
 
-export const makeCurl = (signature: string, params: HmacGeneratorParams): string => {
-    const { host, method, path } = parseUrl(params);
+export async function sha512(message: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+    const hashBuffer = await window.crypto.subtle.digest("SHA-512", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return btoa(String.fromCharCode(...hashArray));
+}
 
-    const curlCommand = `curl --request ${method} \\
-        --url https://${host}${path} \\
+export const makeCurl = (signature: string, params: HmacGeneratorParams): string => {
+    const curlCommand = `curl --request ${params.method} \\
+        --url ${params.url} \\
         --header 'Authorization: HMAC-SHA512 SignedHeaders=x-bwell-date;host;x-bwell-client-user-token;x-bwell-client-key;x-bwell-content-sha512&Signature=${signature}' \\
         --header 'x-bwell-date: ${params.xBwellDate}' \\
         --header 'x-bwell-client-key: ${params.xBwellClientKey}' \\

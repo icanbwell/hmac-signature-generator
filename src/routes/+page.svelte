@@ -7,20 +7,17 @@
     generateHmacSignature,
     makeCurl,
     INITIAL_PARAMS,
+    HttpMethod,
+    sha512,
   } from "@/lib/hmac-generator";
 
-  const environmentOptions = [
-    { value: "dev", label: "dev" },
-    { value: "client-sandbox", label: "client-sandbox" },
-    { value: "staging", label: "staging" },
-  ];
-
-  const requestOptions = [
-    { value: "user-delete", label: "user delete" },
-    { value: "data-export", label: "data export" },
-  ];
+  const methodOptions = Object.values(HttpMethod).map((method) => ({
+    value: method,
+    label: method,
+  }));
 
   let params = INITIAL_PARAMS;
+
   let hmacSignature = "";
   let curlCommand = "";
 
@@ -33,6 +30,21 @@
     hmacSignature = await generateHmacSignature(params);
     curlCommand = makeCurl(hmacSignature, params);
   };
+
+  let body = "";
+
+  $: if (body !== undefined && body !== null) {
+    updateHash();
+  }
+
+  async function updateHash() {
+    params = {
+      ...params,
+      xBwellContentSha512: await sha512(body),
+    };
+
+    console.log(params.xBwellContentSha512);
+  }
 </script>
 
 <h1 class="text-4xl font-bold">HMAC Generator</h1>
@@ -46,23 +58,14 @@
   id="frmHmacParams"
   class="grid grid-cols-1 gap-6 md:grid-cols-2 mb-5"
 >
+  <div class="col-span-1 md:col-span-2">
+    <InputField id="url" label="URL" bind:value={params.url} />
+  </div>
   <SelectField
-    id="environment"
-    label="Environment"
-    options={environmentOptions}
-    bind:value={params.environment}
-  />
-  <SelectField
-    id="request"
-    label="Request"
-    options={requestOptions}
-    bind:value={params.request}
-  />
-  <InputField
-    id="userId"
-    label="userId"
-    placeholder="Enter user ID..."
-    bind:value={params.userId}
+    id="method"
+    label="Method"
+    options={methodOptions}
+    bind:value={params.method}
   />
   <InputField
     id="secret"
@@ -83,10 +86,10 @@
     bind:value={params.xBwellClientKey}
   />
   <TextAreaField
-    id="x-bwell-content-sha512"
-    label="x-bwell-content-sha512"
-    placeholder="Enter content..."
-    bind:value={params.xBwellContentSha512}
+    id="body"
+    label="Body"
+    placeholder="Enter body..."
+    bind:value={body}
   />
   <TextAreaField
     id="x-bwell-client-user-token"
