@@ -22,7 +22,7 @@ export type HmacGeneratorParams = {
 }
 
 export const INITIAL_PARAMS: HmacGeneratorParams = {
-    url: "https://user-data-ops.client-sandbox.icanbwell.com/users/FzwTYdxtxdUIQp3tSTdw%3D%3D/data-exports",
+    url: "",
     method: HttpMethod.POST,
     userId: "FzwTYDxrfi7%2FUIQp3tSTdw%3D%3D",
     xBwellDate: new Date().toISOString().slice(0, 16),
