@@ -29,4 +29,6 @@ jobs:
           git config user.name "bwell-dev"
 
       - name: Build and Deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run deploy
