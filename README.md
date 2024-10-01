@@ -1,6 +1,6 @@
 # hmac-signature-generator
 
-This web app lets you generate an HMAC signature and build a cURL for commands against the `user-data-ops` API.
+This web app lets you generate an HMAC signature and build a cURL for commands against b.well's HMAC-authenticated APIs.
 
 ## Running Locally
 
