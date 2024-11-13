@@ -1,0 +1,46 @@
+name: "Build and Test"
+
+on:
+  pull_request:
+    branches:
+      - "main"
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  # Using `run_id` when the event is not a PR. This will allow each merge to main
+  # to run CI to completion
+  # @see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/control-the-concurrency-of-workflows-and-jobs#example-using-a-fallback-value
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: ./
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: [self-hosted, main]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - id: install
+        name: Install
+        run: npm ci
+
+      - id: build
+        name: Build
+        run: npm run build
+
+      - id: test
+        name: Test
+        run: |
+          npm run test
