@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { HmacGeneratorPage } from '../page/hmac-generator-page';
 
+const URL = 'https://test.icanbwell.com/sample/path';
+
 test.describe('HMAC Generator Page', () => {
     let hmacGeneratorPage: HmacGeneratorPage;
 
@@ -17,6 +19,7 @@ test.describe('HMAC Generator Page', () => {
         await hmacGeneratorPage.fillClientKey('test-client-key');
         await hmacGeneratorPage.fillClientUserToken('test-user-token');
         await hmacGeneratorPage.fillHmacSecret('test-secret');
+        await hmacGeneratorPage.fillUrl(URL);
         await hmacGeneratorPage.generateSignature();
 
         const hmacSignature = await hmacGeneratorPage.getHmacSignature();
@@ -25,7 +28,7 @@ test.describe('HMAC Generator Page', () => {
         expect(hmacSignature).toBeDefined();
         expect(hmacSignature).not.toBe('');
         expect(curlCommand).toContain('--request POST');
-        expect(curlCommand).toContain('https://user-data-ops.client-sandbox.icanbwell.com');
+        expect(curlCommand).toContain(URL);
     });
 
     test('Should not generate HMAC signature when required field is empty', async () => {

@@ -65,4 +65,8 @@ export class HmacGeneratorPage {
     async fillClientUserToken(clientUserToken: string) {
         await this.page.fill(this.clientUserTokenInput, clientUserToken);
     }
+
+    async fillUrl(url: string) {
+        await this.page.fill(this.urlInput, url);
+    }
 }
