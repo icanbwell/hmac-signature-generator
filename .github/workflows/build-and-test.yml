@@ -28,6 +28,10 @@ jobs:
       - id: build
         name: Build
         run: npm run build
+      
+      - id: install-playwright
+        name: Install Playwright Browsers
+        run: npx playwright install
 
       - id: test
         name: Test
