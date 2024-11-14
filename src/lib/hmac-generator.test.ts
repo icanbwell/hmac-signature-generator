@@ -9,6 +9,7 @@ describe('generateHmacSignature', () => {
             secret: 'test-secret',
             xBwellClientKey: 'test-client-key',
             xBwellClientUserToken: 'test-user-token',
+            url: 'https://test.icanbwell.com/sample/path',
         };
 
         const signature = await generateHmacSignature(params);
@@ -23,6 +24,7 @@ describe('makeCurl', () => {
             secret: 'test-secret',
             xBwellClientKey: 'test-client-key',
             xBwellClientUserToken: 'test-user-token',
+            url: 'https://test.icanbwell.com/sample/path',
         };
 
         const signature = await generateHmacSignature(params);
