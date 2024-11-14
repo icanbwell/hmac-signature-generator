@@ -1,4 +1,4 @@
-name: "Build and Test TypeScript SDK"
+name: "Build and Test"
 
 on:
   pull_request:
@@ -12,10 +12,6 @@ concurrency:
   # @see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/control-the-concurrency-of-workflows-and-jobs#example-using-a-fallback-value
   group: ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
-
-defaults:
-  run:
-    working-directory: ./bwell-sdk-typescript
 
 jobs:
   build_and_test:
